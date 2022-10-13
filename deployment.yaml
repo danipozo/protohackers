@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: protohackers-problem
+  labels:
+    app: protohackers-problem
+    svc: timetagger-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: protohackers-problem
+  template:
+    metadata:
+      labels:
+        app: protohackers-problem
+        svc: timetagger-svc
+    spec:
+      containers:
+      - name: protohackers-problem
+        image: danipozo/protohackers-problem1
+        command: ['./binary']
+        ports:
+        - containerPort: 39456
