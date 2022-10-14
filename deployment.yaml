@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: protohackers-problem
-        image: danipozo/protohackers-problem1
+        image: danipozo/protohackers-problem2
         command: ['./binary']
         ports:
         - containerPort: 39456
