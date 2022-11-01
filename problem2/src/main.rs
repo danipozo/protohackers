@@ -49,18 +49,18 @@ impl Decoder for AssetProtoCodec {
         let second_int = i32::from_be_bytes(bytes_array);
         match msg_type as char {
             'I' => {
-                return Ok(Some(AssetProtoRequest::Insert {
+                Ok(Some(AssetProtoRequest::Insert {
                     timestamp: first_int,
                     price: second_int,
                 }))
             }
             'Q' => {
-                return Ok(Some(AssetProtoRequest::Query {
+                Ok(Some(AssetProtoRequest::Query {
                     beginning: first_int,
                     end: second_int,
                 }))
             }
-            _ => return Err(AssetProtoError::WrongMessageType(msg_type)),
+            _ => Err(AssetProtoError::WrongMessageType(msg_type)),
         }
     }
 }

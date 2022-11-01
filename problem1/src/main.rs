@@ -1,8 +1,6 @@
 use num_integer::Roots;
-use serde_json;
 use tokio::io::AsyncWriteExt;
 use tokio::net::{TcpListener, TcpStream};
-use tokio_serde;
 use tokio_stream::StreamExt;
 use tokio_util::codec::{Decoder, FramedRead, LinesCodec, LinesCodecError};
 
@@ -33,7 +31,7 @@ impl Decoder for BytesLinesCodec {
         Ok(self
             .0
             .decode(buf)
-            .map_err(|e| std_error_from_lines_codec_error(e))?
+            .map_err(std_error_from_lines_codec_error)?
             .map(|x| x.as_bytes().into()))
     }
 
@@ -41,7 +39,7 @@ impl Decoder for BytesLinesCodec {
         Ok(self
             .0
             .decode_eof(buf)
-            .map_err(|e| std_error_from_lines_codec_error(e))?
+            .map_err(std_error_from_lines_codec_error)?
             .map(|x| x.as_bytes().into()))
     }
 }
@@ -66,7 +64,7 @@ fn is_valid_prime(i: &serde_json::value::Number) -> bool {
     if let Some(i) = i.as_u64() {
         return is_prime(i);
     }
-    return false;
+    false
 }
 
 async fn process_socket(socket: TcpStream) {
@@ -105,7 +103,7 @@ async fn process_socket(socket: TcpStream) {
 
         if let serde_json::Value::Number(n) = number.unwrap() {
             println!("Returning response for number: {}", n);
-            let response = serde_json::json!({"method": "isPrime", "prime": is_valid_prime(&n)})
+            let response = serde_json::json!({"method": "isPrime", "prime": is_valid_prime(n)})
                 .to_string()
                 + "\n";
             wr.write_all(response.as_bytes()).await.unwrap_or(());
